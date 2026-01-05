@@ -35,33 +35,4 @@
   const map = L.map('map').setView([0, 0], 2);
 
   // Baslager: OpenStreetMap
-  const baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap'
-  }).addTo(map);
-
-  // Bathymetri-lager från EMODnet (Web Mercator, global)
-  const bathyLayer = L.tileLayer(
-    'https://tiles.emodnet-bathymetry.eu/tileserver/gebco/1.0.0/web_mercator/{z}/{x}/{y}.png',
-    {
-      attribution: '© EMODnet / GEBCO',
-      maxZoom: 12
-    }
-  );
-
-  // Testpunkt vid ekvatorn och nollmeridianen
-  L.marker([0, 0]).addTo(map)
-    .bindPopup("Detta är en testpunkt för Radiolaria")
-    .openPopup();
-
-  // Lagerkontroll: slå på/av bathymetri
-  L.control.layers({
-    "OpenStreetMap": baseLayer
-  }, {
-    "Bathymetri": bathyLayer
-  }).addTo(map);
-
-</script>
-
-</body>
-</html>
-
+  const baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/
