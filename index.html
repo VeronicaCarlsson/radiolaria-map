@@ -2,20 +2,12 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Radiolaria Map med Havsdjup</title>
+  <title>Radiolaria Map med Blå Bathymetri</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-    #map {
-      width: 100%;
-      height: 100%;
-    }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    #map { width: 100%; height: 100%; }
   </style>
 </head>
 
@@ -24,19 +16,17 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-
-  // Skapa kartan
   const map = L.map('map').setView([20, 0], 2);
 
-  // Baslager: vanlig OpenStreetMap
+  // Baslager
   const baseLayer = L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     { attribution: '© OpenStreetMap' }
   ).addTo(map);
 
-  // Bathymetri via EMODnet WMS
+  // Bathymetri med blå färgskala
   const bathyWMS = L.tileLayer.wms("https://ows.emodnet-bathymetry.eu/wms?", {
-    layers: "emodnet:mean_multicolour", 
+    layers: "emodnet:gebco_2020_blue",
     format: "image/png",
     transparent: true,
     attribution: "EMODnet Bathymetry"
@@ -51,10 +41,10 @@
   L.control.layers({
     "OpenStreetMap": baseLayer
   }, {
-    "Bathymetri (WMS)": bathyWMS
+    "Bathymetri (Blå)": bathyWMS
   }).addTo(map);
-
 </script>
+
 </body>
 </html>
 
