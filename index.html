@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Radiolaria Map</title>
+  <title>Radiolaria Map Test</title>
 
   <!-- Leaflet CSS -->
   <link
@@ -11,7 +11,7 @@
   />
 
   <style>
-    /* Viktigt för att kartan ska fylla hela fönstret */
+    /* Fyll hela webbläsarfönstret */
     html, body {
       height: 100%;
       margin: 0;
@@ -33,7 +33,7 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-  // Skapa kartan och centrera på hela världen
+  // Skapa kartan centrerad på världen
   const map = L.map('map').setView([0, 0], 2);
 
   // Lägg till bakgrundskarta från OpenStreetMap
@@ -41,5 +41,11 @@
     attribution: '© OpenStreetMap'
   }).addTo(map);
 
-  // Testpunkt vid ekvatorn och nollmeridianen
+  // Lägg till en testpunkt vid ekvatorn
   L.marker([0, 0]).addTo(map)
+    .bindPopup("Detta är en testpunkt för Radiolaria")
+    .openPopup();
+</script>
+
+</body>
+</html>
