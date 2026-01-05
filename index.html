@@ -11,8 +11,17 @@
   />
 
   <style>
-    body { margin: 0; }
-    #map { height: 100vh; }
+    /* Viktigt för att kartan ska fylla hela fönstret */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
   </style>
 </head>
 
@@ -32,10 +41,5 @@
     attribution: '© OpenStreetMap'
   }).addTo(map);
 
-  // Testpunkt för att se att det fungerar
+  // Testpunkt vid ekvatorn och nollmeridianen
   L.marker([0, 0]).addTo(map)
-    .bindPopup("Detta är en testpunkt för Radiolaria");
-</script>
-
-</body>
-</html>
