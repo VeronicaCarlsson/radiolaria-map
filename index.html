@@ -2,10 +2,10 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Radiolaria Map — Ocean v4 + Backdrop v4</title>
+  <title>Radiolaria Map — Ocean + Backdrop</title>
 
   <link rel="stylesheet"
-    href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
     html, body {
@@ -23,23 +23,21 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
 
-  // ===== Init Leaflet‑kartan =====
+  // ===== Init Leaflet-kartan =====
   const map = L.map('map').setView([20, 0], 2);
 
-
-  // ===== Backdrop v4 (baslager) =====
-  const backdropV4 = L.tileLayer(
-    'https://api.maptiler.com/tiles/backdrop-v4/{z}/{x}/{y}.png?key=DIN_MAPTILER_API_KEY',
+  // ===== Backdrop raster (baslager) =====
+  const backdrop = L.tileLayer(
+    'https://api.maptiler.com/tiles/backdrop/{z}/{x}/{y}.png?key=lNejLh7hvsWMyttHYk5E',
     {
       attribution: '© MapTiler © OpenStreetMap',
       maxZoom: 20
     }
-  ).addTo(map);
+  ).addTo(map); // Påslaget som standard
 
-
-  // ===== Ocean v4 (ocean/bathymetri stil) =====
-  const oceanV4 = L.tileLayer(
-    'https://api.maptiler.com/tiles/ocean-v4/{z}/{x}/{y}.png?key=DIN_MAPTILER_API_KEY',
+  // ===== Ocean raster (ocean/lager) =====
+  const ocean = L.tileLayer(
+    'https://api.maptiler.com/tiles/ocean/{z}/{x}/{y}.png?key=lNejLh7hvsWMyttHYk5E',
     {
       attribution: '© MapTiler © OpenStreetMap',
       maxZoom: 12
@@ -51,12 +49,11 @@
     .bindPopup("Testpunkt för Radiolaria")
     .openPopup();
 
-
   // ===== Lagerkontroll =====
   L.control.layers({
-    "Backdrop v4": backdropV4
+    "Backdrop": backdrop
   }, {
-    "Ocean v4": oceanV4
+    "Ocean": ocean
   }).addTo(map);
 
 </script>
