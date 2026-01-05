@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Radiolaria Map med Blå Bathymetri</title>
+  <title>Radiolaria Map med Blå Havsdjup</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
@@ -16,35 +16,18 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
+  // Skapa kartan
   const map = L.map('map').setView([20, 0], 2);
 
-  // Baslager
+  // Baslager: OpenStreetMap
   const baseLayer = L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    { attribution: '© OpenStreetMap' }
+    { attribution: '© OpenStreetMap', maxZoom: 19 }
   ).addTo(map);
 
-  // Bathymetri med blå färgskala
-  const bathyWMS = L.tileLayer.wms("https://ows.emodnet-bathymetry.eu/wms?", {
-    layers: "emodnet:gebco_2020_blue",
-    format: "image/png",
-    transparent: true,
-    attribution: "EMODnet Bathymetry"
-  }).addTo(map);
-
-  // Testpunkt
-  L.marker([0, 0]).addTo(map)
-    .bindPopup("Testpunkt för Radiolaria")
-    .openPopup();
-
-  // Lagerkontroll
-  L.control.layers({
-    "OpenStreetMap": baseLayer
-  }, {
-    "Bathymetri (Blå)": bathyWMS
-  }).addTo(map);
-</script>
-
-</body>
-</html>
+  // Ocean/Bathymetri från MapTiler med din API-nyckel
+  const oceanLayer = L.tileLayer(
+    'https://api.maptiler.com/tiles/ocean/{z}/{x}/{y}.png?key=lNejLh7hvsWMyttHYk5E',
+    {
+      attributio
 
