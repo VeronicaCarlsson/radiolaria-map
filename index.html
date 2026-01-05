@@ -39,18 +39,21 @@
     attribution: '© OpenStreetMap'
   }).addTo(map);
 
-  // Bathymetri-lager från EMODnet
-  const bathyLayer = L.tileLayer('https://tiles.emodnet-bathymetry.eu/web_mercator/{z}/{x}/{y}.png', {
-    attribution: '© EMODnet Bathymetry',
-    maxZoom: 12
-  });
+  // Bathymetri-lager från EMODnet (Web Mercator, global)
+  const bathyLayer = L.tileLayer(
+    'https://tiles.emodnet-bathymetry.eu/tileserver/gebco/1.0.0/web_mercator/{z}/{x}/{y}.png',
+    {
+      attribution: '© EMODnet / GEBCO',
+      maxZoom: 12
+    }
+  );
 
   // Testpunkt vid ekvatorn och nollmeridianen
   L.marker([0, 0]).addTo(map)
     .bindPopup("Detta är en testpunkt för Radiolaria")
     .openPopup();
 
-  // Lagerkontroll (slå på/av bathymetri)
+  // Lagerkontroll: slå på/av bathymetri
   L.control.layers({
     "OpenStreetMap": baseLayer
   }, {
@@ -61,3 +64,4 @@
 
 </body>
 </html>
+
