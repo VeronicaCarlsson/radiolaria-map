@@ -2,11 +2,17 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Radiolaria Map med Blå Havsdjup</title>
+  <title>Radiolaria Map — Ocean v4 + Backdrop v4</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
   <style>
-    html, body { height: 100%; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
     #map { width: 100%; height: 100%; }
   </style>
 </head>
@@ -16,18 +22,45 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-  // Skapa kartan
+
+  // ===== Init Leaflet‑kartan =====
   const map = L.map('map').setView([20, 0], 2);
 
-  // Baslager: OpenStreetMap
-  const baseLayer = L.tileLayer(
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    { attribution: '© OpenStreetMap', maxZoom: 19 }
+
+  // ===== Backdrop v4 (baslager) =====
+  const backdropV4 = L.tileLayer(
+    'https://api.maptiler.com/tiles/backdrop-v4/{z}/{x}/{y}.png?key=DIN_MAPTILER_API_KEY',
+    {
+      attribution: '© MapTiler © OpenStreetMap',
+      maxZoom: 20
+    }
   ).addTo(map);
 
-  // Ocean/Bathymetri från MapTiler med din API-nyckel
-  const oceanLayer = L.tileLayer(
-    'https://api.maptiler.com/tiles/ocean/{z}/{x}/{y}.png?key=lNejLh7hvsWMyttHYk5E',
+
+  // ===== Ocean v4 (ocean/bathymetri stil) =====
+  const oceanV4 = L.tileLayer(
+    'https://api.maptiler.com/tiles/ocean-v4/{z}/{x}/{y}.png?key=DIN_MAPTILER_API_KEY',
     {
-      attributio
+      attribution: '© MapTiler © OpenStreetMap',
+      maxZoom: 12
+    }
+  );
+
+  // ===== Testpunkt =====
+  L.marker([0, 0]).addTo(map)
+    .bindPopup("Testpunkt för Radiolaria")
+    .openPopup();
+
+
+  // ===== Lagerkontroll =====
+  L.control.layers({
+    "Backdrop v4": backdropV4
+  }, {
+    "Ocean v4": oceanV4
+  }).addTo(map);
+
+</script>
+
+</body>
+</html>
 
