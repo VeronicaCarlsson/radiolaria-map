@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Radiolaria Map Test</title>
+  <title>Radiolaria Map med Bathymetri</title>
 
   <!-- Leaflet CSS -->
   <link
@@ -11,13 +11,11 @@
   />
 
   <style>
-    /* Fyll hela webbläsarfönstret */
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
     }
-
     #map {
       width: 100%;
       height: 100%;
@@ -36,15 +34,29 @@
   // Skapa kartan centrerad på världen
   const map = L.map('map').setView([0, 0], 2);
 
-  // Lägg till bakgrundskarta från OpenStreetMap
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  // Baslager: OpenStreetMap
+  const baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap'
   }).addTo(map);
 
-  // Lägg till en testpunkt vid ekvatorn
+  // Bathymetri-lager från EMODnet
+  const bathyLayer = L.tileLayer('https://tiles.emodnet-bathymetry.eu/web_mercator/{z}/{x}/{y}.png', {
+    attribution: '© EMODnet Bathymetry',
+    maxZoom: 12
+  });
+
+  // Testpunkt vid ekvatorn och nollmeridianen
   L.marker([0, 0]).addTo(map)
     .bindPopup("Detta är en testpunkt för Radiolaria")
     .openPopup();
+
+  // Lagerkontroll (slå på/av bathymetri)
+  L.control.layers({
+    "OpenStreetMap": baseLayer
+  }, {
+    "Bathymetri": bathyLayer
+  }).addTo(map);
+
 </script>
 
 </body>
