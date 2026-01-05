@@ -1,1 +1,41 @@
-index.html
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <title>Radiolaria Map</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
+
+  <style>
+    body { margin: 0; }
+    #map { height: 100vh; }
+  </style>
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+  // Skapa kartan och centrera på hela världen
+  const map = L.map('map').setView([0, 0], 2);
+
+  // Lägg till bakgrundskarta från OpenStreetMap
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  // Testpunkt för att se att det fungerar
+  L.marker([0, 0]).addTo(map)
+    .bindPopup("Detta är en testpunkt för Radiolaria");
+</script>
+
+</body>
+</html>
