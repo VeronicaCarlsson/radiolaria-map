@@ -34,34 +34,16 @@
   // Skapa kartan centrerad på världen
   const map = L.map('map').setView([0, 0], 2);
 
-  // Baslager: OSM Light (land vitt, hav transparent)
+  // Baslager: OpenStreetMap
   const baseLayer = L.tileLayer(
-    'https://cartodb-basemaps-a.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', 
-    { attribution: '© OpenStreetMap, © Carto' }
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    { attribution: '© OpenStreetMap' }
   ).addTo(map);
 
-  // Bathymetri-lager från EMODnet (Web Mercator)
+  // Bathymetri hillshade från EMODnet
   const bathyLayer = L.tileLayer(
-    'https://tiles.emodnet-bathymetry.eu/tileserver/gebco/1.0.0/web_mercator/{z}/{x}/{y}.png',
+    'https://tiles.emodnet-bathymetry.eu/tileserver/gebco/1.0.0/web_mercator_hillshade/{z}/{x}/{y}.png',
     {
       attribution: '© EMODnet / GEBCO',
       maxZoom: 12
-    }
-  ).addTo(map); // bathymetri påslaget direkt
 
-  // Testpunkt vid ekvatorn
-  L.marker([0, 0]).addTo(map)
-    .bindPopup("Testpunkt för Radiolaria")
-    .openPopup();
-
-  // Lagerkontroll: slå på/av bathymetri
-  L.control.layers({
-    "OSM Light": baseLayer
-  }, {
-    "Bathymetri": bathyLayer
-  }).addTo(map);
-
-</script>
-
-</body>
-</html>
