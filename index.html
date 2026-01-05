@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Radiolaria Map med Bathymetri</title>
+  <title>Radiolaria Map med Havsdjup</title>
 
   <!-- Leaflet CSS -->
   <link
@@ -28,22 +28,5 @@
 <div id="map"></div>
 
 <!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-<script>
-  // Skapa kartan centrerad på världen
-  const map = L.map('map').setView([0, 0], 2);
-
-  // Baslager: OpenStreetMap
-  const baseLayer = L.tileLayer(
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    { attribution: '© OpenStreetMap' }
-  ).addTo(map);
-
-  // Bathymetri hillshade från EMODnet
-  const bathyLayer = L.tileLayer(
-    'https://tiles.emodnet-bathymetry.eu/tileserver/gebco/1.0.0/web_mercator_hillshade/{z}/{x}/{y}.png',
-    {
-      attribution: '© EMODnet / GEBCO',
-      maxZoom: 12
+<scri
 
