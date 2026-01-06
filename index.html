@@ -5,7 +5,6 @@
   <title>Demerara Rise – ODP Leg 207</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- MapLibre -->
   <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
   <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
 
@@ -24,18 +23,6 @@
       z-index: 1;
       border-radius: 4px;
     }
-
-    .popup h3 {
-      margin: 0 0 6px 0;
-      font-size: 16px;
-    }
-
-    .popup a {
-      display: block;
-      color: #0066cc;
-      text-decoration: none;
-      margin-bottom: 4px;
-    }
   </style>
 </head>
 
@@ -43,17 +30,13 @@
 
 <div id="filters">
   <strong>Time</strong><br>
-  <label><input type="checkbox" id="time-eocene" checked> Eocene</label><br>
-  <label><input type="checkbox" id="time-oligocene"> Oligocene</label><br><br>
+  <label><input type="checkbox" id="time-eocene" checked> Eocene</label><br><br>
 
   <strong>Subject</strong><br>
   <label><input type="checkbox" id="sub-radiolaria" checked> Radiolaria</label><br>
   <label><input type="checkbox" id="sub-stratigraphy" checked> Stratigraphy</label><br>
   <label><input type="checkbox" id="sub-taxonomy" checked> Taxonomy</label><br>
-  <label><input type="checkbox" id="sub-ai" checked> AI</label><br>
-  <label><input type="checkbox" id="sub-foram"> Foraminifera</label><br>
-  <label><input type="checkbox" id="sub-diversity"> Diversity</label><br>
-  <label><input type="checkbox" id="sub-abundance"> Abundance</label>
+  <label><input type="checkbox" id="sub-ai" checked> AI</label>
 </div>
 
 <div id="map"></div>
@@ -68,9 +51,8 @@ const map = new maplibregl.Map({
 
 map.addControl(new maplibregl.NavigationControl());
 
-map.on('load', () => {
+map.on('load', function () {
 
-  // ===== Sites: ODP Leg 207 =====
   map.addSource('sites', {
     type: 'geojson',
     data: {
@@ -81,7 +63,7 @@ map.on('load', () => {
           properties: {
             title: 'Leg 207: Site 1258',
             time: 'Eocene',
-            subject: ['Radiolaria', 'Stratigraphy', 'Taxonomy', 'AI']
+            subject: ['Radiolaria','Stratigraphy','Taxonomy','AI']
           },
           geometry: { type: 'Point', coordinates: [-54.72, 9.43] }
         },
@@ -90,7 +72,7 @@ map.on('load', () => {
           properties: {
             title: 'Leg 207: Site 1259',
             time: 'Eocene',
-            subject: ['Radiolaria', 'Stratigraphy', 'Taxonomy', 'AI']
+            subject: ['Radiolaria','Stratigraphy','Taxonomy','AI']
           },
           geometry: { type: 'Point', coordinates: [-54.95, 9.43] }
         },
@@ -99,7 +81,7 @@ map.on('load', () => {
           properties: {
             title: 'Leg 207: Site 1260',
             time: 'Eocene',
-            subject: ['Radiolaria', 'Stratigraphy', 'Taxonomy', 'AI']
+            subject: ['Radiolaria','Stratigraphy','Taxonomy','AI']
           },
           geometry: { type: 'Point', coordinates: [-54.70, 9.30] }
         }
@@ -119,54 +101,25 @@ map.on('load', () => {
     }
   });
 
-  // ===== Popup on click =====
-  map.on('click', 'site-points', (e) => {
-    const props = e.features[0].properties;
+  map.on('click', 'site-points', function (e) {
+    const title = e.features[0].properties.title;
 
-    const html = `
-      <div class="popup">
-        <h3>${props.title}</h3>
-        <a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022</a>
-        <a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023</a>
-        <a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">Pinto et al., 2023</a>
-        <a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">Tetard et al., 2023</a>
-      </div>
-    `;
+    const popupHTML =
+      '<strong>' + title + '</strong><br>' +
+      '<a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022</a><br>' +
+      '<a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023</a><br>' +
+      '<a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">Pinto et al., 2023</a><br>' +
+      '<a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">Tetard et al., 2023</a>';
 
     new maplibregl.Popup()
       .setLngLat(e.lngLat)
-      .setHTML(html)
+      .setHTML(popupHTML)
       .addTo(map);
   });
 
-  map.on('mouseenter', 'site-points', () => {
-    map.getCanvas().style.cursor = 'pointer';
-  });
-  map.on('mouseleave', 'site-points', () => {
-    map.getCanvas().style.cursor = '';
-  });
+});
+</script>
 
-  // ===== Filter logic =====
-  function updateFilters() {
-    const filters = ['all'];
-
-    const time = ['any'];
-    if (document.getElementById('time-eocene').checked)
-      time.push(['==', ['get', 'time'], 'Eocene']);
-    if (document.getElementById('time-oligocene').checked)
-      time.push(['==', ['get', 'time'], 'Oligocene']);
-
-    const subject = ['any'];
-    const subjects = [
-      ['sub-radiolaria', 'Radiolaria'],
-      ['sub-stratigraphy', 'Stratigraphy'],
-      ['sub-taxonomy', 'Taxonomy'],
-      ['sub-ai', 'AI'],
-      ['sub-foram', 'Foraminifera'],
-      ['sub-diversity', 'Diversity'],
-      ['sub-abundance', 'Abundance']
-    ];
-
-    subjects.forEach(([id, name]) => {
-      if (document.getElementById(id).checked) {
+</body>
+</html>
 
