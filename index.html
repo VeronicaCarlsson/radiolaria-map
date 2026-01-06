@@ -2,47 +2,52 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Radiolaria Map med Bathymetri</title>
+  <title>Radiolaria Map – Ocean v4</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- MapLibre GL -->
+  <link
+    href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css"
+    rel="stylesheet"
+  />
+  <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+
   <style>
-    html, body { height: 100%; margin: 0; padding: 0; }
-    #map { width: 100%; height: 100%; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
   </style>
 </head>
+
 <body>
 <div id="map"></div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-  const map = L.map('map').setView([20, 0], 2);
+  const map = new maplibregl.Map({
+    container: 'map',
+    style: 'https://api.maptiler.com/maps/ocean-v4/style.json?key=lNejLh7hvsWMyttHYk5E',
+    center: [0, 20],
+    zoom: 2
+  });
 
-  // Baslager: OSM
-  const osm = L.tileLayer(
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    { attribution: '© OpenStreetMap' }
-  ).addTo(map);
-
-  // EMODnet hillshade (blåaktig bathymetri)
-  const bathy = L.tileLayer.wms("https://ows.emodnet-bathymetry.eu/wms?", {
-    layers: "emodnet:gebco_2020_hillshade",
-    format: "image/png",
-    transparent: true,
-    attribution: "EMODnet Bathymetry"
-  }).addTo(map);
+  map.addControl(new maplibregl.NavigationControl());
 
   // Testpunkt
-  L.marker([0, 0]).addTo(map)
-    .bindPopup("Testpunkt för Radiolaria")
-    .openPopup();
-
-  // Lagerkontroll
-  L.control.layers({
-    "OpenStreetMap": osm
-  }, {
-    "Bathymetri": bathy
-  }).addTo(map);
-
+  map.on('load', () => {
+    new maplibregl.Marker()
+      .setLngLat([0, 0])
+      .setPopup(new maplibregl.Popup().setText("Radiolaria testpunkt"))
+      .addTo(map);
+  });
 </script>
+
 </body>
 </html>
+
