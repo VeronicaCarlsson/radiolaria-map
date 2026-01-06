@@ -30,13 +30,17 @@
 
 <div id="filters">
   <strong>Time</strong><br>
-  <label><input type="checkbox" id="time-eocene" checked> Eocene</label><br><br>
+  <label><input type="checkbox" id="time-eocene" checked> Eocene</label><br>
+  <label><input type="checkbox" id="time-oligocene"> Oligocene</label><br><br>
 
   <strong>Subject</strong><br>
   <label><input type="checkbox" id="sub-radiolaria" checked> Radiolaria</label><br>
   <label><input type="checkbox" id="sub-stratigraphy" checked> Stratigraphy</label><br>
   <label><input type="checkbox" id="sub-taxonomy" checked> Taxonomy</label><br>
-  <label><input type="checkbox" id="sub-ai" checked> AI</label>
+  <label><input type="checkbox" id="sub-ai" checked> AI</label><br>
+  <label><input type="checkbox" id="sub-foram"> Foraminifera</label><br>
+  <label><input type="checkbox" id="sub-diversity"> Diversity</label><br>
+  <label><input type="checkbox" id="sub-abundance"> Abundance</label>
 </div>
 
 <div id="map"></div>
@@ -50,6 +54,8 @@ const map = new maplibregl.Map({
 });
 
 map.addControl(new maplibregl.NavigationControl());
+
+let hoverPopup = null;
 
 map.on('load', function () {
 
@@ -101,10 +107,34 @@ map.on('load', function () {
     }
   });
 
+  // ===== HOVER: show site name =====
+  map.on('mouseenter', 'site-points', function (e) {
+    map.getCanvas().style.cursor = 'pointer';
+
+    const title = e.features[0].properties.title;
+
+    hoverPopup = new maplibregl.Popup({
+      closeButton: false,
+      closeOnClick: false
+    })
+      .setLngLat(e.lngLat)
+      .setHTML('<strong>' + title + '</strong>')
+      .addTo(map);
+  });
+
+  map.on('mouseleave', 'site-points', function () {
+    map.getCanvas().style.cursor = '';
+    if (hoverPopup) {
+      hoverPopup.remove();
+      hoverPopup = null;
+    }
+  });
+
+  // ===== CLICK: articles =====
   map.on('click', 'site-points', function (e) {
     const title = e.features[0].properties.title;
 
-    const popupHTML =
+    const html =
       '<strong>' + title + '</strong><br>' +
       '<a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022</a><br>' +
       '<a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023</a><br>' +
@@ -113,13 +143,50 @@ map.on('load', function () {
 
     new maplibregl.Popup()
       .setLngLat(e.lngLat)
-      .setHTML(popupHTML)
+      .setHTML(html)
       .addTo(map);
   });
 
+  // ===== FILTER LOGIC =====
+  function updateFilters() {
+    const filters = ['all'];
+
+    const time = ['any'];
+    if (document.getElementById('time-eocene').checked)
+      time.push(['==', ['get', 'time'], 'Eocene']);
+    if (document.getElementById('time-oligocene').checked)
+      time.push(['==', ['get', 'time'], 'Oligocene']);
+
+    const subject = ['any'];
+    const subjects = [
+      ['sub-radiolaria', 'Radiolaria'],
+      ['sub-stratigraphy', 'Stratigraphy'],
+      ['sub-taxonomy', 'Taxonomy'],
+      ['sub-ai', 'AI'],
+      ['sub-foram', 'Foraminifera'],
+      ['sub-diversity', 'Diversity'],
+      ['sub-abundance', 'Abundance']
+    ];
+
+    subjects.forEach(([id, name]) => {
+      if (document.getElementById(id).checked) {
+        subject.push(['in', name, ['get', 'subject']]);
+      }
+    });
+
+    filters.push(time);
+    filters.push(subject);
+
+    map.setFilter('site-points', filters);
+  }
+
+  document.querySelectorAll('#filters input').forEach(el => {
+    el.onchange = updateFilters;
+  });
+
+  updateFilters();
 });
 </script>
 
 </body>
 </html>
-
