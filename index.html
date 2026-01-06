@@ -24,6 +24,18 @@
       z-index: 1;
       border-radius: 4px;
     }
+
+    .popup h3 {
+      margin: 0 0 6px 0;
+      font-size: 16px;
+    }
+
+    .popup a {
+      display: block;
+      color: #0066cc;
+      text-decoration: none;
+      margin-bottom: 4px;
+    }
   </style>
 </head>
 
@@ -58,7 +70,7 @@ map.addControl(new maplibregl.NavigationControl());
 
 map.on('load', () => {
 
-  // ===== Radiolaria / ODP Leg 207 =====
+  // ===== Sites: ODP Leg 207 =====
   map.addSource('sites', {
     type: 'geojson',
     data: {
@@ -67,7 +79,7 @@ map.on('load', () => {
         {
           type: 'Feature',
           properties: {
-            site: 'ODP 1258',
+            title: 'Leg 207: Site 1258',
             time: 'Eocene',
             subject: ['Radiolaria', 'Stratigraphy', 'Taxonomy', 'AI']
           },
@@ -76,7 +88,7 @@ map.on('load', () => {
         {
           type: 'Feature',
           properties: {
-            site: 'ODP 1259',
+            title: 'Leg 207: Site 1259',
             time: 'Eocene',
             subject: ['Radiolaria', 'Stratigraphy', 'Taxonomy', 'AI']
           },
@@ -85,7 +97,7 @@ map.on('load', () => {
         {
           type: 'Feature',
           properties: {
-            site: 'ODP 1260',
+            title: 'Leg 207: Site 1260',
             time: 'Eocene',
             subject: ['Radiolaria', 'Stratigraphy', 'Taxonomy', 'AI']
           },
@@ -107,47 +119,54 @@ map.on('load', () => {
     }
   });
 
-  // ===== FILTER LOGIC (ARRAY-AWARE) =====
+  // ===== Popup on click =====
+  map.on('click', 'site-points', (e) => {
+    const props = e.features[0].properties;
+
+    const html = `
+      <div class="popup">
+        <h3>${props.title}</h3>
+        <a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022</a>
+        <a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023</a>
+        <a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">Pinto et al., 2023</a>
+        <a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">Tetard et al., 2023</a>
+      </div>
+    `;
+
+    new maplibregl.Popup()
+      .setLngLat(e.lngLat)
+      .setHTML(html)
+      .addTo(map);
+  });
+
+  map.on('mouseenter', 'site-points', () => {
+    map.getCanvas().style.cursor = 'pointer';
+  });
+  map.on('mouseleave', 'site-points', () => {
+    map.getCanvas().style.cursor = '';
+  });
+
+  // ===== Filter logic =====
   function updateFilters() {
     const filters = ['all'];
 
-    // Time
     const time = ['any'];
     if (document.getElementById('time-eocene').checked)
       time.push(['==', ['get', 'time'], 'Eocene']);
     if (document.getElementById('time-oligocene').checked)
       time.push(['==', ['get', 'time'], 'Oligocene']);
 
-    // Subject (array match)
     const subject = ['any'];
-    if (document.getElementById('sub-radiolaria').checked)
-      subject.push(['in', 'Radiolaria', ['get', 'subject']]);
-    if (document.getElementById('sub-stratigraphy').checked)
-      subject.push(['in', 'Stratigraphy', ['get', 'subject']]);
-    if (document.getElementById('sub-taxonomy').checked)
-      subject.push(['in', 'Taxonomy', ['get', 'subject']]);
-    if (document.getElementById('sub-ai').checked)
-      subject.push(['in', 'AI', ['get', 'subject']]);
-    if (document.getElementById('sub-foram').checked)
-      subject.push(['in', 'Foraminifera', ['get', 'subject']]);
-    if (document.getElementById('sub-diversity').checked)
-      subject.push(['in', 'Diversity', ['get', 'subject']]);
-    if (document.getElementById('sub-abundance').checked)
-      subject.push(['in', 'Abundance', ['get', 'subject']]);
+    const subjects = [
+      ['sub-radiolaria', 'Radiolaria'],
+      ['sub-stratigraphy', 'Stratigraphy'],
+      ['sub-taxonomy', 'Taxonomy'],
+      ['sub-ai', 'AI'],
+      ['sub-foram', 'Foraminifera'],
+      ['sub-diversity', 'Diversity'],
+      ['sub-abundance', 'Abundance']
+    ];
 
-    filters.push(time);
-    filters.push(subject);
+    subjects.forEach(([id, name]) => {
+      if (document.getElementById(id).checked) {
 
-    map.setFilter('site-points', filters);
-  }
-
-  document.querySelectorAll('#filters input').forEach(el => {
-    el.onchange = updateFilters;
-  });
-
-  updateFilters();
-});
-</script>
-
-</body>
-</html>
