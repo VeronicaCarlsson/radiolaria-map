@@ -34,13 +34,20 @@
   <label><input type="checkbox" id="time-oligocene"> Oligocene</label><br><br>
 
   <strong>Subject</strong><br>
-  <label><input type="checkbox" id="sub-radiolaria" checked> Radiolaria</label><br>
   <label><input type="checkbox" id="sub-stratigraphy" checked> Stratigraphy</label><br>
   <label><input type="checkbox" id="sub-taxonomy" checked> Taxonomy</label><br>
   <label><input type="checkbox" id="sub-ai" checked> AI</label><br>
-  <label><input type="checkbox" id="sub-foram"> Foraminifera</label><br>
   <label><input type="checkbox" id="sub-diversity"> Diversity</label><br>
-  <label><input type="checkbox" id="sub-abundance"> Abundance</label>
+  <label><input type="checkbox" id="sub-abundance"> Abundance</label><br><br>
+
+  <strong>Type of microorganisms</strong><br>
+  <label><input type="checkbox" id="micro-coccoliths"> Coccoliths</label><br>
+  <label><input type="checkbox" id="micro-conodonts"> Conodonts</label><br>
+  <label><input type="checkbox" id="micro-diatoms"> Diatoms</label><br>
+  <label><input type="checkbox" id="micro-dinoflagellates"> Dinoflagellates/Dinoflagellate cysts</label><br>
+  <label><input type="checkbox" id="micro-foraminifera"> Foraminifera</label><br>
+  <label><input type="checkbox" id="micro-ostracods"> Ostracods</label><br>
+  <label><input type="checkbox" id="micro-radiolaria"> Radiolaria</label>
 </div>
 
 <div id="map"></div>
@@ -69,7 +76,7 @@ map.on('load', function () {
           properties: {
             title: 'Leg 207: Site 1258',
             time: 'Eocene',
-            subject: ['Radiolaria','Stratigraphy','Taxonomy','AI']
+            subject: ['Stratigraphy','Taxonomy','AI','Foraminifera','Radiolaria']
           },
           geometry: { type: 'Point', coordinates: [-54.72, 9.43] }
         },
@@ -78,7 +85,7 @@ map.on('load', function () {
           properties: {
             title: 'Leg 207: Site 1259',
             time: 'Eocene',
-            subject: ['Radiolaria','Stratigraphy','Taxonomy','AI']
+            subject: ['Stratigraphy','Taxonomy','AI','Foraminifera','Radiolaria']
           },
           geometry: { type: 'Point', coordinates: [-54.95, 9.43] }
         },
@@ -87,7 +94,7 @@ map.on('load', function () {
           properties: {
             title: 'Leg 207: Site 1260',
             time: 'Eocene',
-            subject: ['Radiolaria','Stratigraphy','Taxonomy','AI']
+            subject: ['Stratigraphy','Taxonomy','AI','Foraminifera','Radiolaria']
           },
           geometry: { type: 'Point', coordinates: [-54.70, 9.30] }
         }
@@ -159,11 +166,9 @@ map.on('load', function () {
 
     const subject = ['any'];
     const subjects = [
-      ['sub-radiolaria', 'Radiolaria'],
       ['sub-stratigraphy', 'Stratigraphy'],
       ['sub-taxonomy', 'Taxonomy'],
       ['sub-ai', 'AI'],
-      ['sub-foram', 'Foraminifera'],
       ['sub-diversity', 'Diversity'],
       ['sub-abundance', 'Abundance']
     ];
@@ -174,8 +179,27 @@ map.on('load', function () {
       }
     });
 
+    // ===== Microorganism filter =====
+    const micro = ['any'];
+    const micros = [
+      ['micro-coccoliths','Coccoliths'],
+      ['micro-conodonts','Conodonts'],
+      ['micro-diatoms','Diatoms'],
+      ['micro-dinoflagellates','Dinoflagellates/Dinoflagellate cysts'],
+      ['micro-foraminifera','Foraminifera'],
+      ['micro-ostracods','Ostracods'],
+      ['micro-radiolaria','Radiolaria']
+    ];
+
+    micros.forEach(([id, name]) => {
+      if (document.getElementById(id).checked) {
+        micro.push(['in', name, ['get', 'subject']]);
+      }
+    });
+
     filters.push(time);
     filters.push(subject);
+    filters.push(micro);
 
     map.setFilter('site-points', filters);
   }
@@ -190,3 +214,4 @@ map.on('load', function () {
 
 </body>
 </html>
+
