@@ -22,8 +22,6 @@
       font-size: 14px;
       z-index: 1;
       border-radius: 4px;
-      max-height: 90vh;
-      overflow-y: auto;
     }
   </style>
 </head>
@@ -32,5 +30,163 @@
 
 <div id="filters">
   <strong>Time</strong><br>
-  <label><input type="checkbox" id="time-eoce
+  <label><input type="checkbox" id="time-eocene" checked> Eocene</label><br>
+  <label><input type="checkbox" id="time-oligocene"> Oligocene</label><br><br>
 
+  <strong>Subject</strong><br>
+  <label><input type="checkbox" id="sub-radiolaria" checked> Radiolaria</label><br>
+  <label><input type="checkbox" id="sub-stratigraphy" checked> Stratigraphy</label><br>
+  <label><input type="checkbox" id="sub-taxonomy" checked> Taxonomy</label><br>
+  <label><input type="checkbox" id="sub-ai" checked> AI</label><br>
+  <label><input type="checkbox" id="sub-foram"> Foraminifera</label><br>
+  <label><input type="checkbox" id="sub-diversity"> Diversity</label><br>
+  <label><input type="checkbox" id="sub-abundance"> Abundance</label>
+</div>
+
+<div id="map"></div>
+
+<script>
+const map = new maplibregl.Map({
+  container: 'map',
+  style: 'https://api.maptiler.com/maps/ocean-v4/style.json?key=lNejLh7hvsWMyttHYk5E',
+  center: [-54.8, 9.4],
+  zoom: 6
+});
+
+map.addControl(new maplibregl.NavigationControl());
+
+let hoverPopup = null;
+
+map.on('load', function () {
+
+  map.addSource('sites', {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          properties: {
+            title: 'Leg 207: Site 1258',
+            time: 'Eocene',
+            subject: ['Radiolaria','Stratigraphy','Taxonomy','AI']
+          },
+          geometry: { type: 'Point', coordinates: [-54.72, 9.43] }
+        },
+        {
+          type: 'Feature',
+          properties: {
+            title: 'Leg 207: Site 1259',
+            time: 'Eocene',
+            subject: ['Radiolaria','Stratigraphy','Taxonomy','AI']
+          },
+          geometry: { type: 'Point', coordinates: [-54.95, 9.43] }
+        },
+        {
+          type: 'Feature',
+          properties: {
+            title: 'Leg 207: Site 1260',
+            time: 'Eocene',
+            subject: ['Radiolaria','Stratigraphy','Taxonomy','AI']
+          },
+          geometry: { type: 'Point', coordinates: [-54.70, 9.30] }
+        }
+      ]
+    }
+  });
+
+  map.addLayer({
+    id: 'site-points',
+    type: 'circle',
+    source: 'sites',
+    paint: {
+      'circle-radius': 7,
+      'circle-color': '#cc0000',
+      'circle-stroke-color': '#000',
+      'circle-stroke-width': 1
+    }
+  });
+
+  // ===== HOVER: show site name =====
+  map.on('mouseenter', 'site-points', function (e) {
+    map.getCanvas().style.cursor = 'pointer';
+
+    const title = e.features[0].properties.title;
+
+    hoverPopup = new maplibregl.Popup({
+      closeButton: false,
+      closeOnClick: false
+    })
+      .setLngLat(e.lngLat)
+      .setHTML('<strong>' + title + '</strong>')
+      .addTo(map);
+  });
+
+  map.on('mouseleave', 'site-points', function () {
+    map.getCanvas().style.cursor = '';
+    if (hoverPopup) {
+      hoverPopup.remove();
+      hoverPopup = null;
+    }
+  });
+
+  // ===== CLICK: articles =====
+  map.on('click', 'site-points', function (e) {
+    const title = e.features[0].properties.title;
+
+    const html =
+      '<strong>' + title + '</strong><br>' +
+      '<a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022</a><br>' +
+      '<a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023</a><br>' +
+      '<a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">Pinto et al., 2023</a><br>' +
+      '<a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">Tetard et al., 2023</a>';
+
+    new maplibregl.Popup()
+      .setLngLat(e.lngLat)
+      .setHTML(html)
+      .addTo(map);
+  });
+
+  // ===== FILTER LOGIC =====
+  function updateFilters() {
+    const filters = ['all'];
+
+    const time = ['any'];
+    if (document.getElementById('time-eocene').checked)
+      time.push(['==', ['get', 'time'], 'Eocene']);
+    if (document.getElementById('time-oligocene').checked)
+      time.push(['==', ['get', 'time'], 'Oligocene']);
+
+    const subject = ['any'];
+    const subjects = [
+      ['sub-radiolaria', 'Radiolaria'],
+      ['sub-stratigraphy', 'Stratigraphy'],
+      ['sub-taxonomy', 'Taxonomy'],
+      ['sub-ai', 'AI'],
+      ['sub-foram', 'Foraminifera'],
+      ['sub-diversity', 'Diversity'],
+      ['sub-abundance', 'Abundance']
+    ];
+
+    subjects.forEach(([id, name]) => {
+      if (document.getElementById(id).checked) {
+        subject.push(['in', name, ['get', 'subject']]);
+      }
+    });
+
+    filters.push(time);
+    filters.push(subject);
+
+    map.setFilter('site-points', filters);
+  }
+
+  document.querySelectorAll('#filters input').forEach(el => {
+    el.onchange = updateFilters;
+  });
+
+  updateFilters();
+});
+</script>
+
+</body>
+</html>
