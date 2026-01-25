@@ -1,53 +1,52 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <title>Demerara Rise – ODP Leg 207</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Demerara Rise – ODP Leg 207</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
-  <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
 
-  <style>
-    html, body { margin: 0; padding: 0; height: 100%; }
-    #map { width: 100%; height: 100%; }
-
-    #filters {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: white;
-      padding: 10px;
-      font-family: sans-serif;
-      font-size: 14px;
-      z-index: 1;
-      border-radius: 4px;
-    }
-  </style>
+<style>
+html, body { margin: 0; padding: 0; height: 100%; }
+#map { width: 100%; height: 100%; }
+#filters {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: white;
+  padding: 10px;
+  font-family: sans-serif;
+  font-size: 14px;
+  z-index: 1;
+  border-radius: 4px;
+}
+</style>
 </head>
 
 <body>
 
 <div id="filters">
-  <strong>Time</strong><br>
-  <label><input type="checkbox" id="time-eocene" checked> Eocene</label><br>
-  <label><input type="checkbox" id="time-oligocene"> Oligocene</label><br><br>
+<strong>Time</strong><br>
+<label><input type="checkbox" id="time-eocene" checked> Eocene</label><br>
+<label><input type="checkbox" id="time-oligocene"> Oligocene</label><br><br>
 
-  <strong>Subject</strong><br>
-  <label><input type="checkbox" id="sub-stratigraphy" checked> Stratigraphy</label><br>
-  <label><input type="checkbox" id="sub-taxonomy" checked> Taxonomy</label><br>
-  <label><input type="checkbox" id="sub-ai" checked> AI</label><br>
-  <label><input type="checkbox" id="sub-diversity"> Diversity</label><br>
-  <label><input type="checkbox" id="sub-abundance"> Abundance</label><br><br>
+<strong>Subject</strong><br>
+<label><input type="checkbox" id="sub-stratigraphy" checked> Stratigraphy</label><br>
+<label><input type="checkbox" id="sub-taxonomy" checked> Taxonomy</label><br>
+<label><input type="checkbox" id="sub-ai" checked> AI</label><br>
+<label><input type="checkbox" id="sub-diversity"> Diversity</label><br>
+<label><input type="checkbox" id="sub-abundance"> Abundance</label><br><br>
 
-  <strong>Type of microorganisms</strong><br>
-  <label><input type="checkbox" id="micro-coccoliths"> Coccoliths</label><br>
-  <label><input type="checkbox" id="micro-conodonts"> Conodonts</label><br>
-  <label><input type="checkbox" id="micro-diatoms"> Diatoms</label><br>
-  <label><input type="checkbox" id="micro-dinoflagellates"> Dinoflagellates/Dinoflagellate cysts</label><br>
-  <label><input type="checkbox" id="micro-foraminifera"> Foraminifera</label><br>
-  <label><input type="checkbox" id="micro-ostracods"> Ostracods</label><br>
-  <label><input type="checkbox" id="micro-radiolaria" checked> Radiolaria</label>
+<strong>Type of microorganisms</strong><br>
+<label><input type="checkbox" id="micro-foraminifera"> Foraminifera</label><br>
+<label><input type="checkbox" id="micro-radiolaria" checked> Radiolaria</label><br>
+<label><input type="checkbox" id="micro-diatoms"> Diatoms</label><br>
+<label><input type="checkbox" id="micro-coccoliths"> Coccoliths</label><br>
+<label><input type="checkbox" id="micro-dinoflagellates"> Dinoflagellates/Dinoflagellate cysts</label><br>
+<label><input type="checkbox" id="micro-ostracods"> Ostracods</label><br>
+<label><input type="checkbox" id="micro-conodonts"> Conodonts</label>
 </div>
 
 <div id="map"></div>
@@ -57,146 +56,111 @@ const map = new maplibregl.Map({
   container: 'map',
   style: 'https://api.maptiler.com/maps/ocean-v4/style.json?key=lNejLh7hvsWMyttHYk5E',
   center: [-54.8, 9.4],
-  zoom: 6,
-  interactive: true
+  zoom: 6
 });
-
-// Restore default right-click menu
-map.getCanvas().addEventListener('contextmenu', (e) => e.stopPropagation(), false);
 
 map.addControl(new maplibregl.NavigationControl());
 
+// Default cursor
+map.getCanvas().style.cursor = 'default';
+
 let hoverPopup = null;
 
-map.on('load', function () {
+map.on('load', function() {
 
-  // === Features (sites + articles) ===
-  map.addSource('sites', {
-    type: 'geojson',
-    data: {
-      type: 'FeatureCollection',
-      features: [
-        // Site 1258
-        { type: 'Feature', geometry: { type: 'Point', coordinates: [-54.72, 9.43] },
-          properties: { title: 'Leg 207: Site 1258', time: 'Eocene',
-            subject: ['Stratigraphy','Taxonomy','AI'], micro: ['Foraminifera','Radiolaria'],
-            articles: [
-              {title: "Carlsson et al., 2022 (AI Podocyrtis dataset)", doi:"https://doi.org/10.5194/jm-41-165-2022"},
-              {title: "Carlsson et al., 2023 (AI Radiolarian dataset)", doi:"https://doi.org/10.1016/j.marmicro.2023.102268"},
-              {title: "Pinto et al., 2023 (Morphometric analysis)", doi:"https://doi.org/10.1016/j.marmicro.2023.102293"}
-            ]
-          }
-        },
-        // Site 1259
-        { type: 'Feature', geometry: { type: 'Point', coordinates: [-54.95, 9.43] },
-          properties: { title: 'Leg 207: Site 1259', time: 'Eocene',
-            subject: ['Stratigraphy','Taxonomy','AI'], micro: ['Foraminifera','Radiolaria'],
-            articles: [
-              {title: "Carlsson et al., 2022 (AI Podocyrtis dataset)", doi:"https://doi.org/10.5194/jm-41-165-2022"},
-              {title: "Carlsson et al., 2023 (AI Radiolarian dataset)", doi:"https://doi.org/10.1016/j.marmicro.2023.102268"},
-              {title: "Pinto et al., 2023 (Morphometric analysis)", doi:"https://doi.org/10.1016/j.marmicro.2023.102293"}
-            ]
-          }
-        },
-        // Site 1260
-        { type: 'Feature', geometry: { type: 'Point', coordinates: [-54.70, 9.30] },
-          properties: { title: 'Leg 207: Site 1260', time: 'Eocene',
-            subject: ['Stratigraphy','Taxonomy','AI'], micro: ['Foraminifera','Radiolaria'],
-            articles: [
-              {title: "Carlsson et al., 2022 (AI Podocyrtis dataset)", doi:"https://doi.org/10.5194/jm-41-165-2022"},
-              {title: "Meunier & Danelian, 2022 (Bioevents at Site 1260)", doi:"https://doi.org/10.5194/jm-41-1-2022"},
-              {title: "Meunier & Danelian, 2023 (Nassellarian diversity)", doi:"https://doi.org/10.1017/jpa.2022.82"},
-              {title: "Carlsson et al., 2023 (AI Radiolarian dataset)", doi:"https://doi.org/10.1016/j.marmicro.2023.102268"},
-              {title: "Pinto et al., 2023 (Morphometric analysis)", doi:"https://doi.org/10.1016/j.marmicro.2023.102293"}
-            ]
-          }
+  const sitesGeoJSON = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [-54.72, 9.43] },
+        properties: {
+          title: 'Leg 207: Site 1258',
+          time: 'Eocene',
+          subject: ['Stratigraphy','Taxonomy','AI'],
+          micro: ['Foraminifera','Radiolaria'],
+          articles: [
+            {title: "Carlsson et al., 2022", doi:"https://doi.org/10.5194/jm-41-165-2022"},
+            {title: "Carlsson et al., 2023 (AI Radiolarian dataset)", doi:"https://doi.org/10.1016/j.marmicro.2023.102268"},
+            {title: "Pinto et al., 2023 (Morphometric analysis)", doi:"https://doi.org/10.1016/j.marmicro.2023.102293"}
+          ]
         }
-      ]
-    }
-  });
+      },
+      {
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [-54.95, 9.43] },
+        properties: {
+          title: 'Leg 207: Site 1259',
+          time: 'Eocene',
+          subject: ['Stratigraphy','Taxonomy','AI'],
+          micro: ['Foraminifera','Radiolaria'],
+          articles: [
+            {title: "Carlsson et al., 2022", doi:"https://doi.org/10.5194/jm-41-165-2022"},
+            {title: "Carlsson et al., 2023 (AI Radiolarian dataset)", doi:"https://doi.org/10.1016/j.marmicro.2023.102268"},
+            {title: "Pinto et al., 2023 (Morphometric analysis)", doi:"https://doi.org/10.1016/j.marmicro.2023.102293"}
+          ]
+        }
+      },
+      {
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [-54.70, 9.30] },
+        properties: {
+          title: 'Leg 207: Site 1260',
+          time: 'Eocene',
+          subject: ['Stratigraphy','Taxonomy','AI'],
+          micro: ['Foraminifera','Radiolaria'],
+          articles: [
+            {title: "Carlsson et al., 2022", doi:"https://doi.org/10.5194/jm-41-165-2022"},
+            {title: "Meunier & Danelian, 2022 (Bioevents at Site 1260)", doi:"https://doi.org/10.5194/jm-41-1-2022"},
+            {title: "Meunier & Danelian, 2023 (Nassellarian diversity)", doi:"https://doi.org/10.1017/jpa.2022.82"},
+            {title: "Carlsson et al., 2023 (AI Radiolarian dataset)", doi:"https://doi.org/10.1016/j.marmicro.2023.102268"},
+            {title: "Pinto et al., 2023 (Morphometric analysis)", doi:"https://doi.org/10.1016/j.marmicro.2023.102293"}
+          ]
+        }
+      }
+    ]
+  };
 
-  // === Layer ===
+  map.addSource('sites', { type:'geojson', data: sitesGeoJSON });
+
   map.addLayer({
-    id: 'site-points',
-    type: 'circle',
-    source: 'sites',
-    paint: {
-      'circle-radius': 7,
-      'circle-color': '#cc0000',
-      'circle-stroke-color': '#000',
-      'circle-stroke-width': 1
+    id:'site-points',
+    type:'circle',
+    source:'sites',
+    paint:{
+      'circle-radius':7,
+      'circle-color':'#cc0000',
+      'circle-stroke-color':'#000',
+      'circle-stroke-width':1
     }
   });
 
-  // === Hover popup ===
-  map.on('mouseenter', 'site-points', function (e) {
-    map.getCanvas().style.cursor = 'pointer';
+  // Hover
+  map.on('mouseenter','site-points', function(e){
+    map.getCanvas().style.cursor='pointer';
     hoverPopup = new maplibregl.Popup({closeButton:false, closeOnClick:false})
       .setLngLat(e.lngLat)
-      .setHTML('<strong>' + e.features[0].properties.title + '</strong>')
+      .setHTML('<strong>'+e.features[0].properties.title+'</strong>')
       .addTo(map);
   });
-  map.on('mouseleave', 'site-points', function () {
-    map.getCanvas().style.cursor = '';
-    if (hoverPopup) { hoverPopup.remove(); hoverPopup=null; }
+  map.on('mouseleave','site-points', function(){
+    map.getCanvas().style.cursor='default';
+    if(hoverPopup){hoverPopup.remove(); hoverPopup=null;}
   });
 
-  // === Click popup with articles ===
-  map.on('click', 'site-points', function(e){
-    const articles = e.features[0].properties.articles;
-    let html = '<strong>' + e.features[0].properties.title + '</strong><br>';
-    articles.forEach(a => {
-      html += '<a href="' + a.doi + '" target="_blank">' + a.title + '</a><br>';
+  // Click popup
+  map.on('click','site-points', function(e){
+    const props = e.features[0].properties;
+    let html = '<strong>'+props.title+'</strong><br>';
+    props.articles.forEach(a=>{
+      html += '<a href="'+a.doi+'" target="_blank">'+a.title+'</a><br>';
     });
     new maplibregl.Popup().setLngLat(e.lngLat).setHTML(html).addTo(map);
   });
-
-  // === Filter logic ===
-  function updateFilters() {
-    const filters = ['all'];
-
-    // Time
-    const timeFilters = ['any'];
-    if(document.getElementById('time-eocene').checked) timeFilters.push(['==',['get','time'],'Eocene']);
-    if(document.getElementById('time-oligocene').checked) timeFilters.push(['==',['get','time'],'Oligocene']);
-
-    // Subject
-    const subjectFilters = ['any'];
-    const subjects = [
-      ['sub-stratigraphy','Stratigraphy'],
-      ['sub-taxonomy','Taxonomy'],
-      ['sub-ai','AI'],
-      ['sub-diversity','Diversity'],
-      ['sub-abundance','Abundance']
-    ];
-    subjects.forEach(([id,name])=>{
-      if(document.getElementById(id).checked) subjectFilters.push(['in',name,['get','subject']]);
-    });
-
-    // Microorganisms
-    const microFilters = ['any'];
-    const micros = [
-      ['micro-coccoliths','Coccoliths'],
-      ['micro-conodonts','Conodonts'],
-      ['micro-diatoms','Diatoms'],
-      ['micro-dinoflagellates','Dinoflagellates/Dinoflagellate cysts'],
-      ['micro-foraminifera','Foraminifera'],
-      ['micro-ostracods','Ostracods'],
-      ['micro-radiolaria','Radiolaria']
-    ];
-    micros.forEach(([id,name])=>{
-      if(document.getElementById(id).checked) microFilters.push(['in',name,['get','micro']]);
-    });
-
-    filters.push(timeFilters,subjectFilters,microFilters);
-    map.setFilter('site-points', filters);
-  }
-
-  document.querySelectorAll('#filters input').forEach(el => el.onchange = updateFilters);
-  updateFilters();
 
 });
 </script>
 
 </body>
 </html>
+ 
