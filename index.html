@@ -24,7 +24,6 @@ html, body { margin: 0; padding: 0; height: 100%; }
 }
 </style>
 </head>
-
 <body>
 
 <div id="filters">
@@ -60,8 +59,6 @@ const map = new maplibregl.Map({
 });
 
 map.addControl(new maplibregl.NavigationControl());
-
-// Default cursor
 map.getCanvas().style.cursor = 'default';
 
 let hoverPopup = null;
@@ -76,14 +73,13 @@ map.on('load', function() {
         geometry: { type: 'Point', coordinates: [-54.72, 9.43] },
         properties: {
           title: 'Leg 207: Site 1258',
-          time: 'Eocene',
-          subject: ['Stratigraphy','Taxonomy','AI'],
-          micro: ['Foraminifera','Radiolaria'],
-          articles: [
-            {title: "Carlsson et al., 2022", doi:"https://doi.org/10.5194/jm-41-165-2022"},
-            {title: "Carlsson et al., 2023 (AI Radiolarian dataset)", doi:"https://doi.org/10.1016/j.marmicro.2023.102268"},
-            {title: "Pinto et al., 2023 (Morphometric analysis)", doi:"https://doi.org/10.1016/j.marmicro.2023.102293"}
-          ]
+          popupHTML: `
+            <strong>Leg 207: Site 1258</strong><br>
+            <a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023 (AI Radiolarian dataset)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">Pinto et al., 2023 (Morphometric analysis)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">Tetard et al., 2023</a>
+          `
         }
       },
       {
@@ -91,14 +87,13 @@ map.on('load', function() {
         geometry: { type: 'Point', coordinates: [-54.95, 9.43] },
         properties: {
           title: 'Leg 207: Site 1259',
-          time: 'Eocene',
-          subject: ['Stratigraphy','Taxonomy','AI'],
-          micro: ['Foraminifera','Radiolaria'],
-          articles: [
-            {title: "Carlsson et al., 2022", doi:"https://doi.org/10.5194/jm-41-165-2022"},
-            {title: "Carlsson et al., 2023 (AI Radiolarian dataset)", doi:"https://doi.org/10.1016/j.marmicro.2023.102268"},
-            {title: "Pinto et al., 2023 (Morphometric analysis)", doi:"https://doi.org/10.1016/j.marmicro.2023.102293"}
-          ]
+          popupHTML: `
+            <strong>Leg 207: Site 1259</strong><br>
+            <a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023 (AI Radiolarian dataset)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">Pinto et al., 2023 (Morphometric analysis)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">Tetard et al., 2023</a>
+          `
         }
       },
       {
@@ -106,16 +101,15 @@ map.on('load', function() {
         geometry: { type: 'Point', coordinates: [-54.70, 9.30] },
         properties: {
           title: 'Leg 207: Site 1260',
-          time: 'Eocene',
-          subject: ['Stratigraphy','Taxonomy','AI'],
-          micro: ['Foraminifera','Radiolaria'],
-          articles: [
-            {title: "Carlsson et al., 2022", doi:"https://doi.org/10.5194/jm-41-165-2022"},
-            {title: "Meunier & Danelian, 2022 (Bioevents at Site 1260)", doi:"https://doi.org/10.5194/jm-41-1-2022"},
-            {title: "Meunier & Danelian, 2023 (Nassellarian diversity)", doi:"https://doi.org/10.1017/jpa.2022.82"},
-            {title: "Carlsson et al., 2023 (AI Radiolarian dataset)", doi:"https://doi.org/10.1016/j.marmicro.2023.102268"},
-            {title: "Pinto et al., 2023 (Morphometric analysis)", doi:"https://doi.org/10.1016/j.marmicro.2023.102293"}
-          ]
+          popupHTML: `
+            <strong>Leg 207: Site 1260</strong><br>
+            <a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022</a><br>
+            <a href="https://doi.org/10.5194/jm-41-1-2022" target="_blank">Meunier & Danelian, 2022 (Bioevents at Site 1260)</a><br>
+            <a href="https://doi.org/10.1017/jpa.2022.82" target="_blank">Meunier & Danelian, 2023 (Nassellarian diversity)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023 (AI Radiolarian dataset)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">Pinto et al., 2023 (Morphometric analysis)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">Tetard et al., 2023</a>
+          `
         }
       }
     ]
@@ -150,12 +144,10 @@ map.on('load', function() {
 
   // Click popup
   map.on('click','site-points', function(e){
-    const props = e.features[0].properties;
-    let html = '<strong>'+props.title+'</strong><br>';
-    props.articles.forEach(a=>{
-      html += '<a href="'+a.doi+'" target="_blank">'+a.title+'</a><br>';
-    });
-    new maplibregl.Popup().setLngLat(e.lngLat).setHTML(html).addTo(map);
+    new maplibregl.Popup()
+      .setLngLat(e.lngLat)
+      .setHTML(e.features[0].properties.popupHTML)
+      .addTo(map);
   });
 
 });
@@ -163,4 +155,3 @@ map.on('load', function() {
 
 </body>
 </html>
- 
