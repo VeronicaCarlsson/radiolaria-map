@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
-<title>Demerara Rise – ODP Leg 207 + Blake Nose Eocene Radiolaria</title>
+<title>Demerara Rise + Global Eocene Radiolaria</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
@@ -24,6 +24,7 @@ html, body { margin: 0; padding: 0; height: 100%; }
 }
 </style>
 </head>
+
 <body>
 
 <div id="filters">
@@ -68,7 +69,7 @@ map.on('load', function() {
   const sitesGeoJSON = {
     type: 'FeatureCollection',
     features: [
-      // ---- Leg 207 Sites ----
+      // ===== Leg 207 Sites =====
       {
         type: 'Feature',
         geometry: { type: 'Point', coordinates: [-54.72, 9.43] },
@@ -76,14 +77,10 @@ map.on('load', function() {
           title: 'Leg 207: Site 1258',
           popupHTML: `
             <strong>Leg 207: Site 1258</strong><br>
-            <a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">
-            Carlsson et al., 2022 (AI Radiolarian dataset)</a><br>
-            <a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">
-            Carlsson et al., 2023 (AI Radiolarian dataset)</a><br>
-            <a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">
-            Pinto et al., 2023 (Morphometric analysis)</a><br>
-            <a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">
-            Tetard et al., 2023 (AI Radiolarian dataset)</a>
+            <a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022 (AI Radiolarian dataset)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023 (AI Radiolarian dataset)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">Pinto et al., 2023 (Morphometric analysis)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">Tetard et al., 2023 (AI Radiolarian dataset)</a>
           `
         }
       },
@@ -94,14 +91,10 @@ map.on('load', function() {
           title: 'Leg 207: Site 1259',
           popupHTML: `
             <strong>Leg 207: Site 1259</strong><br>
-            <a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">
-            Carlsson et al., 2022 (AI Radiolarian dataset)</a><br>
-            <a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">
-            Carlsson et al., 2023 (AI Radiolarian dataset)</a><br>
-            <a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">
-            Pinto et al., 2023 (Morphometric analysis)</a><br>
-            <a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">
-            Tetard et al., 2023 (AI Radiolarian dataset)</a>
+            <a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022 (AI Radiolarian dataset)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023 (AI Radiolarian dataset)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">Pinto et al., 2023 (Morphometric analysis)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">Tetard et al., 2023 (AI Radiolarian dataset)</a>
           `
         }
       },
@@ -112,44 +105,47 @@ map.on('load', function() {
           title: 'Leg 207: Site 1260',
           popupHTML: `
             <strong>Leg 207: Site 1260</strong><br>
-            <a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">
-            Carlsson et al., 2022 (AI Radiolarian dataset)</a><br>
-            <a href="https://doi.org/10.5194/jm-41-1-2022" target="_blank">
-            Meunier & Danelian, 2022 (Bioevents at Site 1260)</a><br>
-            <a href="https://doi.org/10.1017/jpa.2022.82" target="_blank">
-            Meunier & Danelian, 2023 (Nassellarian diversity)</a><br>
-            <a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">
-            Carlsson et al., 2023 (AI Radiolarian dataset)</a><br>
-            <a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">
-            Pinto et al., 2023 (Morphometric analysis)</a><br>
-            <a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">
-            Tetard et al., 2023 (AI Radiolarian dataset)</a>
+            <a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022 (AI Radiolarian dataset)</a><br>
+            <a href="https://doi.org/10.5194/jm-41-1-2022" target="_blank">Meunier & Danelian, 2022 (Bioevents at Site 1260)</a><br>
+            <a href="https://doi.org/10.1017/jpa.2022.82" target="_blank">Meunier & Danelian, 2023 (Nassellarian diversity)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023 (AI Radiolarian dataset)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">Pinto et al., 2023 (Morphometric analysis)</a><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2023.102296" target="_blank">Tetard et al., 2023 (AI Radiolarian dataset)</a>
           `
         }
       },
 
-      // ---- Blake Nose Eocene radiolarian points ----
+      // ===== Nya globala Eocene Radiolaria Sites =====
       {
         type: 'Feature',
-        geometry: { type: 'Point', coordinates: [-76.523, 29.995] },
+        geometry: { type: 'Point', coordinates: [-76.36, 30.05] },
         properties: {
-          title: 'Blake Nose: Site 1053 (late Eocene Radiolaria)',
+          title: 'Blake Nose – Site 1051 (Eocene Radiolaria)',
           popupHTML: `
-            <strong>Blake Nose: Site 1053</strong><br>
-            <a href="https://doi.org/10.5194/jm-43-303-2024" target="_blank">
-            de Entrambasaguas et al., 2024 (Eocene radiolarian turnover)</a>
+            <strong>Blake Nose – Site 1051</strong><br>
+            <a href="https://doi.org/10.1017/jpa.2024.7" target="_blank">Meunier & Danelian, 2024 (New middle Eocene radiolarian species)</a>
           `
         }
       },
       {
         type: 'Feature',
-        geometry: { type: 'Point', coordinates: [-76.357, 30.053] },
+        geometry: { type: 'Point', coordinates: [-41.09, -28.29] },
         properties: {
-          title: 'Blake Nose: Site 1051 (middle‑late Eocene)',
+          title: 'DSDP Site 356 – São Paulo Plateau (Eocene Radiolaria)',
           popupHTML: `
-            <strong>Blake Nose: Site 1051</strong><br>
-            <a href="https://doi.org/10.5194/jm-43-303-2024" target="_blank">
-            de Entrambasaguas et al., 2024 (Eocene radiolarian turnover)</a>
+            <strong>DSDP Site 356 – São Paulo Plateau</strong><br>
+            <a href="https://doi.org/10.1016/j.marmicro.2017.09.004" target="_blank">de Souza et al., 2017 (Early to middle Eocene radiolarian biostratigraphy)</a>
+          `
+        }
+      },
+      {
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [-142.16, 12.07] },
+        properties: {
+          title: 'IODP Site U1331 – Eastern Equatorial Pacific (Eocene Radiolaria)',
+          popupHTML: `
+            <strong>IODP Site U1331 – Eastern Equatorial Pacific</strong><br>
+            <a href="https://doi.org/10.2204/iodp.proc.320321.202.2012" target="_blank">Kamikuri et al., 2012 (Early to middle Eocene radiolarian biostratigraphy)</a>
           `
         }
       }
@@ -196,3 +192,4 @@ map.on('load', function() {
 
 </body>
 </html>
+
