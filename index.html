@@ -55,7 +55,7 @@ const map = new maplibregl.Map({
   container: 'map',
   style: 'https://api.maptiler.com/maps/ocean-v4/style.json?key=lNejLh7hvsWMyttHYk5E',
   center: [-54.8, 9.4],
-  zoom: 3
+  zoom: 2
 });
 
 map.addControl(new maplibregl.NavigationControl());
@@ -125,30 +125,41 @@ const sitesGeoJSON = {
     // ---- Global Eocene Radiolaria ----
     {
       type: 'Feature',
-      geometry: { type: 'Point', coordinates: [-76.523, 29.995] },
+      geometry: { type: 'Point', coordinates: [-76.36, 30.05] },
       properties: {
-        title: 'Blake Nose: Site 1053 (late Eocene Radiolaria)',
-        time: ['Eocene'],
-        subject: ['Radiolaria'],
-        microorganisms: ['Radiolaria'],
-        popupHTML: `<strong>Blake Nose: Site 1053</strong><br>
-        de Entrambasaguas et al., 2024 (Eocene radiolarian turnover)`
-      }
-    },
-    {
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: [-76.357, 30.053] },
-      properties: {
-        title: 'Blake Nose: Site 1051 (middle-late Eocene)',
+        title: 'Blake Nose: Site 1051 (Eocene Radiolaria)',
         time: ['Eocene'],
         subject: ['Radiolaria'],
         microorganisms: ['Radiolaria'],
         popupHTML: `<strong>Blake Nose: Site 1051</strong><br>
-        de Entrambasaguas et al., 2024 (Eocene radiolarian turnover)`
+        Meunier & Danelian, 2024 (nya arter från Blake Nose)`
+      }
+    },
+    {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [-41.09, -28.29] },
+      properties: {
+        title: 'DSDP Site 356 – São Paulo Plateau (Eocene Radiolaria)',
+        time: ['Eocene'],
+        subject: ['Radiolaria'],
+        microorganisms: ['Radiolaria'],
+        popupHTML: `<strong>DSDP Site 356</strong><br>
+        de Souza et al., 2017 (radiolarian biostratigrafi)`
+      }
+    },
+    {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [-142.16, 12.07] },
+      properties: {
+        title: 'IODP Site U1331 – Eastern Equatorial Pacific (Eocene Radiolaria)',
+        time: ['Eocene'],
+        subject: ['Radiolaria'],
+        microorganisms: ['Radiolaria'],
+        popupHTML: `<strong>IODP Site U1331</strong><br>
+        Kamikuri et al., 2012 (radiolarian zonering)`
       }
     }
 
-    // Här kan du lägga till fler globala Eocene radiolaria-lokaler på samma sätt
   ]
 };
 
@@ -218,4 +229,21 @@ map.on('load', function() {
         {id:'micro-coccoliths', value:'Coccoliths'},
         {id:'micro-dinoflagellates', value:'Dinoflagellates/Dinoflagellate cysts'},
         {id:'micro-ostracods', value:'Ostracods'},
-        {id:'mic
+        {id:'micro-conodonts', value:'Conodonts'}
+      ];
+      const microChecked = microBoxes.filter(b => document.getElementById(b.id).checked).map(b=>b.value);
+      if(microChecked.length>0 && !feature.properties.microorganisms.some(m=>microChecked.includes(m))) return false;
+
+      return true;
+    });
+
+    map.getSource('sites').setData({type:'FeatureCollection', features:filters});
+  }
+
+  document.querySelectorAll('#filters input').forEach(el => el.onchange = updateFilters);
+  updateFilters();
+});
+</script>
+
+</body>
+</html>
