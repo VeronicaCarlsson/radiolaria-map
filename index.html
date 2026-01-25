@@ -76,16 +76,41 @@ map.on('load', function () {
     data: {
       type: 'FeatureCollection',
       features: [
-        // Sites
+        // Site 1258
         { type: 'Feature', geometry: { type: 'Point', coordinates: [-54.72, 9.43] },
           properties: { title: 'Leg 207: Site 1258', time: 'Eocene',
-            subject: ['Stratigraphy','Taxonomy','AI'], micro: ['Foraminifera','Radiolaria'] } },
+            subject: ['Stratigraphy','Taxonomy','AI'], micro: ['Foraminifera','Radiolaria'],
+            articles: [
+              {title: "Carlsson et al., 2022 (AI Podocyrtis dataset)", doi:"https://doi.org/10.5194/jm-41-165-2022"},
+              {title: "Carlsson et al., 2023 (AI Radiolarian dataset)", doi:"https://doi.org/10.1016/j.marmicro.2023.102268"},
+              {title: "Pinto et al., 2023 (Morphometric analysis)", doi:"https://doi.org/10.1016/j.marmicro.2023.102293"}
+            ]
+          }
+        },
+        // Site 1259
         { type: 'Feature', geometry: { type: 'Point', coordinates: [-54.95, 9.43] },
           properties: { title: 'Leg 207: Site 1259', time: 'Eocene',
-            subject: ['Stratigraphy','Taxonomy','AI'], micro: ['Foraminifera','Radiolaria'] } },
+            subject: ['Stratigraphy','Taxonomy','AI'], micro: ['Foraminifera','Radiolaria'],
+            articles: [
+              {title: "Carlsson et al., 2022 (AI Podocyrtis dataset)", doi:"https://doi.org/10.5194/jm-41-165-2022"},
+              {title: "Carlsson et al., 2023 (AI Radiolarian dataset)", doi:"https://doi.org/10.1016/j.marmicro.2023.102268"},
+              {title: "Pinto et al., 2023 (Morphometric analysis)", doi:"https://doi.org/10.1016/j.marmicro.2023.102293"}
+            ]
+          }
+        },
+        // Site 1260
         { type: 'Feature', geometry: { type: 'Point', coordinates: [-54.70, 9.30] },
           properties: { title: 'Leg 207: Site 1260', time: 'Eocene',
-            subject: ['Stratigraphy','Taxonomy','AI'], micro: ['Foraminifera','Radiolaria'] } }
+            subject: ['Stratigraphy','Taxonomy','AI'], micro: ['Foraminifera','Radiolaria'],
+            articles: [
+              {title: "Carlsson et al., 2022 (AI Podocyrtis dataset)", doi:"https://doi.org/10.5194/jm-41-165-2022"},
+              {title: "Meunier & Danelian, 2022 (Bioevents at Site 1260)", doi:"https://doi.org/10.5194/jm-41-1-2022"},
+              {title: "Meunier & Danelian, 2023 (Nassellarian diversity)", doi:"https://doi.org/10.1017/jpa.2022.82"},
+              {title: "Carlsson et al., 2023 (AI Radiolarian dataset)", doi:"https://doi.org/10.1016/j.marmicro.2023.102268"},
+              {title: "Pinto et al., 2023 (Morphometric analysis)", doi:"https://doi.org/10.1016/j.marmicro.2023.102293"}
+            ]
+          }
+        }
       ]
     }
   });
@@ -118,14 +143,11 @@ map.on('load', function () {
 
   // === Click popup with articles ===
   map.on('click', 'site-points', function(e){
-    const title = e.features[0].properties.title;
-    const html =
-      '<strong>' + title + '</strong><br>' +
-      '<a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022</a><br>' +
-      '<a href="https://doi.org/10.5194/jm-41-1-2022" target="_blank">Meunier & Danelian, 2022 (Bioevents at Site 1260)</a><br>' +
-      '<a href="https://doi.org/10.1017/jpa.2022.82" target="_blank">Meunier & Danelian, 2023 (Nassellarian diversity)</a><br>' +
-      '<a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023 (AI Radiolarian dataset)</a><br>' +
-      '<a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">Pinto et al., 2023 (Morphometric analysis)</a>';
+    const articles = e.features[0].properties.articles;
+    let html = '<strong>' + e.features[0].properties.title + '</strong><br>';
+    articles.forEach(a => {
+      html += '<a href="' + a.doi + '" target="_blank">' + a.title + '</a><br>';
+    });
     new maplibregl.Popup().setLngLat(e.lngLat).setHTML(html).addTo(map);
   });
 
