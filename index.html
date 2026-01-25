@@ -47,7 +47,7 @@
   <label><input type="checkbox" id="micro-dinoflagellates"> Dinoflagellates/Dinoflagellate cysts</label><br>
   <label><input type="checkbox" id="micro-foraminifera"> Foraminifera</label><br>
   <label><input type="checkbox" id="micro-ostracods"> Ostracods</label><br>
-  <label><input type="checkbox" id="micro-radiolaria"> Radiolaria</label>
+  <label><input type="checkbox" id="micro-radiolaria" checked> Radiolaria</label>
 </div>
 
 <div id="map"></div>
@@ -57,8 +57,12 @@ const map = new maplibregl.Map({
   container: 'map',
   style: 'https://api.maptiler.com/maps/ocean-v4/style.json?key=lNejLh7hvsWMyttHYk5E',
   center: [-54.8, 9.4],
-  zoom: 6
+  zoom: 6,
+  interactive: true
 });
+
+// Restore default right-click menu
+map.getCanvas().addEventListener('contextmenu', (e) => e.stopPropagation(), false);
 
 map.addControl(new maplibregl.NavigationControl());
 
@@ -66,42 +70,27 @@ let hoverPopup = null;
 
 map.on('load', function () {
 
+  // === Features (sites + articles) ===
   map.addSource('sites', {
     type: 'geojson',
     data: {
       type: 'FeatureCollection',
       features: [
-        {
-          type: 'Feature',
-          properties: {
-            title: 'Leg 207: Site 1258',
-            time: 'Eocene',
-            subject: ['Stratigraphy','Taxonomy','AI','Foraminifera','Radiolaria']
-          },
-          geometry: { type: 'Point', coordinates: [-54.72, 9.43] }
-        },
-        {
-          type: 'Feature',
-          properties: {
-            title: 'Leg 207: Site 1259',
-            time: 'Eocene',
-            subject: ['Stratigraphy','Taxonomy','AI','Foraminifera','Radiolaria']
-          },
-          geometry: { type: 'Point', coordinates: [-54.95, 9.43] }
-        },
-        {
-          type: 'Feature',
-          properties: {
-            title: 'Leg 207: Site 1260',
-            time: 'Eocene',
-            subject: ['Stratigraphy','Taxonomy','AI','Foraminifera','Radiolaria']
-          },
-          geometry: { type: 'Point', coordinates: [-54.70, 9.30] }
-        }
+        // Sites
+        { type: 'Feature', geometry: { type: 'Point', coordinates: [-54.72, 9.43] },
+          properties: { title: 'Leg 207: Site 1258', time: 'Eocene',
+            subject: ['Stratigraphy','Taxonomy','AI'], micro: ['Foraminifera','Radiolaria'] } },
+        { type: 'Feature', geometry: { type: 'Point', coordinates: [-54.95, 9.43] },
+          properties: { title: 'Leg 207: Site 1259', time: 'Eocene',
+            subject: ['Stratigraphy','Taxonomy','AI'], micro: ['Foraminifera','Radiolaria'] } },
+        { type: 'Feature', geometry: { type: 'Point', coordinates: [-54.70, 9.30] },
+          properties: { title: 'Leg 207: Site 1260', time: 'Eocene',
+            subject: ['Stratigraphy','Taxonomy','AI'], micro: ['Foraminifera','Radiolaria'] } }
       ]
     }
   });
 
+  // === Layer ===
   map.addLayer({
     id: 'site-points',
     type: 'circle',
@@ -114,33 +103,22 @@ map.on('load', function () {
     }
   });
 
-  // ===== HOVER: show site name =====
+  // === Hover popup ===
   map.on('mouseenter', 'site-points', function (e) {
     map.getCanvas().style.cursor = 'pointer';
-
-    const title = e.features[0].properties.title;
-
-    hoverPopup = new maplibregl.Popup({
-      closeButton: false,
-      closeOnClick: false
-    })
+    hoverPopup = new maplibregl.Popup({closeButton:false, closeOnClick:false})
       .setLngLat(e.lngLat)
-      .setHTML('<strong>' + title + '</strong>')
+      .setHTML('<strong>' + e.features[0].properties.title + '</strong>')
       .addTo(map);
   });
-
   map.on('mouseleave', 'site-points', function () {
     map.getCanvas().style.cursor = '';
-    if (hoverPopup) {
-      hoverPopup.remove();
-      hoverPopup = null;
-    }
+    if (hoverPopup) { hoverPopup.remove(); hoverPopup=null; }
   });
 
-  // ===== CLICK: articles =====
-  map.on('click', 'site-points', function (e) {
+  // === Click popup with articles ===
+  map.on('click', 'site-points', function(e){
     const title = e.features[0].properties.title;
-
     const html =
       '<strong>' + title + '</strong><br>' +
       '<a href="https://doi.org/10.5194/jm-41-165-2022" target="_blank">Carlsson et al., 2022</a><br>' +
@@ -148,40 +126,33 @@ map.on('load', function () {
       '<a href="https://doi.org/10.1017/jpa.2022.82" target="_blank">Meunier & Danelian, 2023 (Nassellarian diversity)</a><br>' +
       '<a href="https://doi.org/10.1016/j.marmicro.2023.102268" target="_blank">Carlsson et al., 2023 (AI Radiolarian dataset)</a><br>' +
       '<a href="https://doi.org/10.1016/j.marmicro.2023.102293" target="_blank">Pinto et al., 2023 (Morphometric analysis)</a>';
-
-    new maplibregl.Popup()
-      .setLngLat(e.lngLat)
-      .setHTML(html)
-      .addTo(map);
+    new maplibregl.Popup().setLngLat(e.lngLat).setHTML(html).addTo(map);
   });
 
-  // ===== FILTER LOGIC =====
+  // === Filter logic ===
   function updateFilters() {
     const filters = ['all'];
 
-    const time = ['any'];
-    if (document.getElementById('time-eocene').checked)
-      time.push(['==', ['get', 'time'], 'Eocene']);
-    if (document.getElementById('time-oligocene').checked)
-      time.push(['==', ['get', 'time'], 'Oligocene']);
+    // Time
+    const timeFilters = ['any'];
+    if(document.getElementById('time-eocene').checked) timeFilters.push(['==',['get','time'],'Eocene']);
+    if(document.getElementById('time-oligocene').checked) timeFilters.push(['==',['get','time'],'Oligocene']);
 
-    const subject = ['any'];
+    // Subject
+    const subjectFilters = ['any'];
     const subjects = [
-      ['sub-stratigraphy', 'Stratigraphy'],
-      ['sub-taxonomy', 'Taxonomy'],
-      ['sub-ai', 'AI'],
-      ['sub-diversity', 'Diversity'],
-      ['sub-abundance', 'Abundance']
+      ['sub-stratigraphy','Stratigraphy'],
+      ['sub-taxonomy','Taxonomy'],
+      ['sub-ai','AI'],
+      ['sub-diversity','Diversity'],
+      ['sub-abundance','Abundance']
     ];
-
-    subjects.forEach(([id, name]) => {
-      if (document.getElementById(id).checked) {
-        subject.push(['in', name, ['get', 'subject']]);
-      }
+    subjects.forEach(([id,name])=>{
+      if(document.getElementById(id).checked) subjectFilters.push(['in',name,['get','subject']]);
     });
 
-    // ===== Microorganism filter =====
-    const micro = ['any'];
+    // Microorganisms
+    const microFilters = ['any'];
     const micros = [
       ['micro-coccoliths','Coccoliths'],
       ['micro-conodonts','Conodonts'],
@@ -191,28 +162,19 @@ map.on('load', function () {
       ['micro-ostracods','Ostracods'],
       ['micro-radiolaria','Radiolaria']
     ];
-
-    micros.forEach(([id, name]) => {
-      if (document.getElementById(id).checked) {
-        micro.push(['in', name, ['get', 'subject']]);
-      }
+    micros.forEach(([id,name])=>{
+      if(document.getElementById(id).checked) microFilters.push(['in',name,['get','micro']]);
     });
 
-    filters.push(time);
-    filters.push(subject);
-    filters.push(micro);
-
+    filters.push(timeFilters,subjectFilters,microFilters);
     map.setFilter('site-points', filters);
   }
 
-  document.querySelectorAll('#filters input').forEach(el => {
-    el.onchange = updateFilters;
-  });
-
+  document.querySelectorAll('#filters input').forEach(el => el.onchange = updateFilters);
   updateFilters();
+
 });
 </script>
 
 </body>
 </html>
-
